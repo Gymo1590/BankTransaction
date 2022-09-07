@@ -13,6 +13,7 @@ contract BankTransaction{
      uint date;
      string note;
  }
+ Transaction newTransaction;
  mapping (address=>Transaction) public records;
     mapping(bytes32=> address) getPaymentID;
 
@@ -27,7 +28,7 @@ contract BankTransaction{
     (bool sent,) = owner.call{value:_amount}("ether sent");
     require(sent, "not enough ether");
     bytes32  paymentID = keccak256(abi.encodePacked(bytes32(bytes20(owner)),bytes32(bytes20(_receiver)),bytes32(block.timestamp),bytes32(_amount)));
-    Transaction memory newTransaction = Transaction(paymentID,owner,_receiver,_amount,block.timestamp,_note );
+    newTransaction = Transaction(paymentID,owner,_receiver,_amount,block.timestamp,_note );
     records[owner] = newTransaction;
     //the code below will help us to search a contract by payment id since in solidity mapping you can only search for the key and not value
     getPaymentID[paymentID] = owner;
